@@ -22,9 +22,10 @@ jobs:
       - name: Save Docker image to TAR file
         run: |
          docker save -o karizma.tar karizma
-         apt install putty-tools
-         pscp -pw ${{ secrets.WINDOWS_VM_PASSWORD }} ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/karizma.tar \
-         C:\Users\haseeb\Desktop\
+      - name: Transfer Docker image to Azure Windows VM
+        run: |
+          sudo apt-get install -y sshpass
+          sshpass -p ${{ secrets.WINDOWS_VM_PASSWORD }} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@${{ secrets.WINDOWS_VM_HOST }}:'C:/Users/haseeb/Desktop/'
 
 
       - name: Execute commands on Azure Windows VM
