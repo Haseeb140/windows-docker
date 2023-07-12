@@ -22,18 +22,9 @@ jobs:
       - name: Save Docker image to TAR file
         run: |
          docker save -o karizma.tar karizma
-
-         
-
-      - name: Transfer Docker image to Azure Windows VM
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: ./karizma.tar
-          remote: C:\Users\haseeb\Desktop\
-          host: ${{ secrets.WINDOWS_VM_HOST }}
-          username: ${{ secrets.WINDOWS_VM_USERNAME }}
-          password: ${{ secrets.WINDOWS_VM_PASSWORD }}
-          port: ${{ secrets.WINDOWS_VM_SSH_PORT }}
+         apt install putty-tools
+         pscp -pw ${{ secrets.WINDOWS_VM_PASSWORD }} ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/karizma.tar \
+         C:\Users\haseeb\Desktop\
 
 
       - name: Execute commands on Azure Windows VM
