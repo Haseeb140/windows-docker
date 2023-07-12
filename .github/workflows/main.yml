@@ -33,7 +33,7 @@ jobs:
           target: 'C:/Users/haseeb/Desktop/karizma.tar'
 
       - name: Execute commands on Azure Windows VM
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.WINDOWS_VM_HOST }}
           username: ${{ secrets.WINDOWS_VM_USERNAME }}
