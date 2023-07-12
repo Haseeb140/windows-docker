@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -24,7 +24,6 @@ jobs:
          docker save -o karizma.tar karizma
       - name: Transfer Docker image to Azure Windows VM
         run: |
-          sudo apt-get install -y sshpass
           sshpass -p ${{ secrets.WINDOWS_VM_PASSWORD }} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@${{ secrets.WINDOWS_VM_HOST }}:'C:/Users/haseeb/Desktop/'
 
 
