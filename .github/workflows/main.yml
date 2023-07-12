@@ -22,6 +22,8 @@ jobs:
       - name: Save Docker image to TAR file
         run: |
          docker save -o karizma.tar karizma
+         pwd
+         ls
       - name: Transfer Docker image to Azure Windows VM
         run: |
           pwd
