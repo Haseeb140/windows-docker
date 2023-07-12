@@ -25,7 +25,8 @@ jobs:
       - name: Transfer Docker image to Azure Windows VM
         run: |
           pwd
-          scp -r \karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/cd C:/Users/haseeb/Desktop
+          ls
+          scp -r D:\a\windows-docker\windows-docker\karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/cd C:/Users/haseeb/Desktop
 
 
       - name: Execute commands on Azure Windows VM
