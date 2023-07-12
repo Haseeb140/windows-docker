@@ -24,7 +24,9 @@ jobs:
          docker save -o karizma.tar karizma
       - name: Transfer to Windows VM
         run: |
-         scp -r \karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/C:\Users\haseeb\Desktop
+         Send-PowerShellServerFile -Server ${{ secrets.WINDOWS_VM_HOST }} -RemoteFile C:\Users\haseeb\Desktop
+         -LocalFile karizma.tar
+        
 
       - name: Execute commands on Azure Windows VM
         uses: appleboy/ssh-action@master
