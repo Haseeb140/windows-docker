@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -22,11 +22,46 @@ jobs:
       - name: Save Docker image to TAR file
         run: |
          docker save -o karizma.tar karizma
-      - name: Transfer to Windows VM
-        run: |
-         Send-PowerShellServerFile -Server ${{ secrets.WINDOWS_VM_HOST }} -RemoteFile C:\Users\haseeb\Desktop
-         -LocalFile karizma.tar
-        
+         
+
+
+      - name: Transfer Docker image to Azure Windows VM
+        uses: betanzos/scp-upload@v1
+        with:
+          # Source local file path
+          # REQUIRED
+          source: ./karizma.tar
+
+          # Remote host
+          # REQUIRED
+          host: ${{ secrets.WINDOWS_VM_HOST }}
+
+          # Remote host SSH port
+          port: ${{ secrets.WINDOWS_VM_SSH_PORT }}
+
+          # Remote host username
+          # REQUIRED
+          username: ${{ secrets.WINDOWS_VM_USERNAME }}
+
+          # SSH private key
+          # REQUIRED  
+          key: ${{ secrets.WINDOWS_VM_KEY }}
+
+          # Remote directory to copy the file. Default $HOME
+          # REQUIRED  
+          remote_dir: C:/Users/haseeb/Desktop
+
+
+      - name: Transfer Docker image to Azure Windows VM
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: karizma.tar
+          remote: 'C:/Users/haseeb/Desktop/'
+          host: ${{ secrets.WINDOWS_VM_HOST }}
+          username: ${{ secrets.WINDOWS_VM_USERNAME }}
+          password: ${{ secrets.WINDOWS_VM_PASSWORD }}
+          port: ${{ secrets.WINDOWS_VM_SSH_PORT }}
+
 
       - name: Execute commands on Azure Windows VM
         uses: appleboy/ssh-action@master
