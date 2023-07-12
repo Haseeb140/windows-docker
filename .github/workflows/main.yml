@@ -21,15 +21,12 @@ jobs:
 
       - name: Save Docker image to TAR file
         run: |
+         cd C:\
+         pwd
          docker save -o karizma.tar karizma
+         scp -r \karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/C:/Users/haseeb/Desktop
          pwd
          ls
-      - name: Transfer Docker image to Azure Windows VM
-        run: |
-          pwd
-          ls
-          scp -r D:\a\windows-docker\windows-docker\karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@:${{ secrets.WINDOWS_VM_HOST }}/cd C:/Users/haseeb/Desktop
-
 
       - name: Execute commands on Azure Windows VM
         uses: appleboy/ssh-action@master
