@@ -20,7 +20,10 @@ jobs:
         run: docker build -t karizma .
 
       - name: Save Docker image to TAR file
-        run: docker save -o karizma.tar karizma
+        run: |
+         docker save -o karizma.tar karizma
+         pwd 
+         ls 
 
       - name: Transfer Docker image to Azure Windows VM
         uses: appleboy/scp-action@v0.1.4
