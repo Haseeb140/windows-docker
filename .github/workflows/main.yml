@@ -7,24 +7,39 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Docker
-        uses: docker/setup-docker@v1
+        uses: docker/setup-buildx-action@v1
 
       - name: Build Docker image
-        run: |
-          docker build -t karizma .
-          docker save -o karizma.tar karizma
+        run: docker build -t karizma .
+
+      - name: Save Docker image to TAR file
+        run: docker save -o karizma.tar karizma
 
       - name: Transfer Docker image to Azure Windows VM
-        run: |
-          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null karizma.tar ${{ secrets.WINDOWS_VM_USERNAME }}@${{ secrets.WINDOWS_VM_HOST }}:'C:\Users\haseeb\Desktop\'
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.WINDOWS_VM_HOST }}
+          username: ${{ secrets.WINDOWS_VM_USERNAME }}
+          password: ${{ secrets.WINDOWS_VM_PASSWORD }}
+          port: ${{ secrets.WINDOWS_VM_SSH_PORT }}
+          source: karizma.tar
+          target: 'C:/Users/haseeb/Desktop/karizma.tar'
 
       - name: Execute commands on Azure Windows VM
-        run: |
-          sshpass -p ${{ secrets.WINDOWS_VM_PASSWORD }} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.WINDOWS_VM_USERNAME }}@${{ secrets.WINDOWS_VM_HOST }} 'cd C:\Users\haseeb\Desktop; docker load -i karizma.tar; docker run -d -p 8080:80 karizma'
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.WINDOWS_VM_HOST }}
+          username: ${{ secrets.WINDOWS_VM_USERNAME }}
+          password: ${{ secrets.WINDOWS_VM_PASSWORD }}
+          port: ${{ secrets.WINDOWS_VM_SSH_PORT }}
+          script: |
+            cd C:/Users/haseeb/Desktop
+            docker load -i karizma.tar
+            docker run -d -p 8080:80 karizma
